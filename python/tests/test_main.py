@@ -1,13 +1,51 @@
-from py_check.main import get_bar, get_baz, get_foo
+import pytest
+from py_check.main import WordleGame
 
+@pytest.fixture
+def game_setup():
+    # Reset the game state before each test
+    WordleGame.word_to_match = "build"
+    WordleGame.guess_list = []
+    game = WordleGame()
+    return game
 
-def test_get_foo_should_return_foo():
-    assert get_foo() == "foo"
+def test_get_word_to_match(game_setup):
+    assert game_setup.get_word_to_match() == "build"
 
+def test_get_guess_list(game_setup):
+    assert game_setup.get_guess_list() == []
 
-def test_get_bar_should_return_bar():
-    assert get_bar() == "bar"
+def test_check_guess_fail(game_setup):
+    result = game_setup.check_guess("start")
+    assert result == "-----"
 
+def test_check_guess_part_fail(game_setup):
+    result = game_setup.check_guess("blank")
+    assert result == "GY---"
 
-def test_get_baz_should_return_baz():
-    assert get_baz() == "baz"
+def test_check_guess_part_fail_dup_letters(game_setup):
+    result = game_setup.check_guess("balls")
+    assert result == "G--G-"
+
+def test_check_guess_part_fail_dup_letters_two(game_setup):
+    result = game_setup.check_guess("allee")
+    assert result == "--Y--"
+
+def test_check_guess_part_fail_dup_letters_three(game_setup):
+    game_setup.word_to_match = "after"
+    result = game_setup.check_guess("fluff")
+    assert result == "----Y"
+
+def test_check_guess_part_fail_dup_letters_four(game_setup):
+    game_setup.word_to_match = "fluff"
+    result = game_setup.check_guess("after")
+    assert result == "-Y---"
+
+def test_check_guess_part_fail_dup_letters_five(game_setup):
+    game_setup.word_to_match = "affix"
+    result = game_setup.check_guess("fluff")
+    assert result == "---YY"
+
+def test_check_guess_pass(game_setup):
+    result = game_setup.check_guess("build")
+    assert result == "GGGGG"
