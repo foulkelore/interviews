@@ -70,6 +70,12 @@ class WordleGame:
         """
         Initialize the WordleGame with a random target word and an empty guess list.
         """
+        self.reset_game()
+                
+    def reset_game(self):
+        """
+        Reset the game to its initial state with a new random word and empty guess list.
+        """
         self.word_to_match = self.generate_random_word()
         self.guess_list = []
         self.current_guess_count = 0
@@ -154,12 +160,46 @@ class WordleGame:
             
             if result == 'G' * len(self.word_to_match):
                 print("Congratulations! You've guessed the word!")
-                break
-        else:
-            print(f"Sorry, you've used all attempts. The word was: {self.word_to_match}")
+                return True  # Return True for win
+        
+        # If we reach here, all attempts were used without winning
+        print(f"Sorry, you've used all attempts. The word was: {self.word_to_match}")
+        return False  # Return False for loss
+    
+    def start_game_loop(self):
+        """
+        Start the game loop with option to play multiple rounds.
+        """
+        print("\n🎯 Welcome to Wordle! 🎯")
+        print("Guess the 5-letter word in 5 attempts or less!")
+        print("G = Green (correct letter, correct position)")
+        print("Y = Yellow (correct letter, wrong position)")
+        print("- = Grey (letter not in word)\n")
+        
+        while True:
+            won = self.play_game()
+            
+            if won:
+                print(f"🎉 You won in {self.current_guess_count} attempts!")
+            else:
+                print("💔 Better luck next time!")
+            
+            # Ask if player wants to play again
+            while True:
+                play_again = input("\nWould you like to play again? (y/n): ").strip().lower()
+                if play_again in ['y', 'yes']:
+                    print("\n" + "="*50)
+                    print("Starting a new game...")
+                    print("="*50)
+                    self.reset_game()
+                    break
+                elif play_again in ['n', 'no']:
+                    print("Thanks for playing Wordle! 👋")
+                    return
+                else:
+                    print("Please enter 'y' for yes or 'n' for no.")
 
 
 if __name__ == "__main__":
     game = WordleGame()
-    print(f"\n\nPlay Wordle - word to guess is {game.word_to_match}!\n\n")
-    game.play_game()
+    game.start_game_loop()
