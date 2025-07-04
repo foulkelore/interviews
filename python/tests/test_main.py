@@ -53,3 +53,8 @@ def test_generate_random_word(game_setup):
     result = game_setup.generate_random_word()
     assert len(result) == 5
     assert result.isalpha()
+
+def test_reset_game(game_setup):
+    org_word = game_setup.get_word_to_match()
+    game_setup.reset_game()
+    assert game_setup.get_word_to_match() != org_word
