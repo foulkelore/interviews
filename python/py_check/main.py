@@ -139,6 +139,10 @@ class WordleGame:
         while self.current_guess_count < self.max_guess_count:
             guess = input(f"Attempt {self.current_guess_count + 1}/{self.max_guess_count}: Enter your guess (5 letters): ").strip().lower()
             
+            if guess in self.guess_list:
+                print("You've already guessed that word.")
+                continue
+            
             if len(guess) != 5 or not guess.isalpha():
                 print("Invalid guess. Please enter a 5-letter word.")
                 continue
