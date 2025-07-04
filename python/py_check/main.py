@@ -4,6 +4,8 @@ import random
 class WordleGame:
     word_to_match: str = "build"
     guess_list: list[str] = []
+    max_guess_count: int = 5
+    current_guess_count: int = 0
     
     # Common 5-letter words for Wordle
     _word_list = [
@@ -69,7 +71,8 @@ class WordleGame:
         Initialize the WordleGame with a random target word and an empty guess list.
         """
         self.word_to_match = self.generate_random_word()
-        self.guess_list =[]
+        self.guess_list = []
+        self.current_guess_count = 0
 
     def get_word_to_match(self) -> str:
         return self.word_to_match
@@ -128,7 +131,31 @@ class WordleGame:
                 result[pos] = 'Y'
         
         return ''.join(result)
+    
+    def play_game(self):
+        """
+        Main game loop for playing Wordle.
+        """
+        while self.current_guess_count < self.max_guess_count:
+            guess = input(f"Attempt {self.current_guess_count + 1}/{self.max_guess_count}: Enter your guess (5 letters): ").strip().lower()
+            
+            if len(guess) != 5 or not guess.isalpha():
+                print("Invalid guess. Please enter a 5-letter word.")
+                continue
+            
+            self.current_guess_count += 1
+            result = self.check_guess(guess)
+            self.guess_list.append(guess)
+            print(f"Result: {result}")
+            
+            if result == 'G' * len(self.word_to_match):
+                print("Congratulations! You've guessed the word!")
+                break
+        else:
+            print(f"Sorry, you've used all attempts. The word was: {self.word_to_match}")
 
 
 if __name__ == "__main__":
-    print("\n\nPlay Wordle!\n\n")
+    self = WordleGame()
+    print(f"\n\nPlay Wordle - word to guess is {self.word_to_match}!\n\n")
+    self.play_game()
