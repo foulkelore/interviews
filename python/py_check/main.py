@@ -6,6 +6,12 @@ class WordleGame:
     guess_list: list[str] = []
     max_guess_count: int = 5
     current_guess_count: int = 0
+    games_played: int = 0
+    games_won: int = 0
+    current_win_streak: int = 0
+    current_lose_streak: int = 0
+    best_win_streak: int = 0
+    best_lose_streak: int = 0
     
     # Common 5-letter words for Wordle
     _word_list = [
@@ -70,11 +76,18 @@ class WordleGame:
         """
         Initialize the WordleGame with a random target word and an empty guess list.
         """
+        self.games_played = 0
+        self.games_won = 0
+        self.current_win_streak = 0
+        self.current_lose_streak = 0
+        self.best_win_streak = 0
+        self.best_lose_streak = 0
         self.reset_game()
                 
     def reset_game(self):
         """
-        Reset the game to its initial state with a new random word and empty guess list.
+        Reset the current game to its initial state with a new random word and empty guess list.
+        Note: This doesn't reset streak statistics.
         """
         self.word_to_match = self.generate_random_word()
         self.guess_list = []
@@ -94,6 +107,46 @@ class WordleGame:
             A random 5-letter word
         """
         return random.choice(self._word_list)
+
+    def update_streaks(self, won: bool):
+        """
+        Update win/lose streaks based on game result.
+        
+        Args:
+            won: True if the player won, False if they lost
+        """
+        self.games_played += 1
+        
+        if won:
+            self.games_won += 1
+            self.current_win_streak += 1
+            self.current_lose_streak = 0
+            # Update best win streak if current is better
+            if self.current_win_streak > self.best_win_streak:
+                self.best_win_streak = self.current_win_streak
+        else:
+            self.current_lose_streak += 1
+            self.current_win_streak = 0
+            # Update best lose streak if current is better (higher number)
+            if self.current_lose_streak > self.best_lose_streak:
+                self.best_lose_streak = self.current_lose_streak
+
+    def display_statistics(self):
+        """
+        Display current game statistics including streaks.
+        """
+        win_rate = (self.games_won / self.games_played * 100) if self.games_played > 0 else 0
+        
+        print("\n📊 GAME STATISTICS 📊")
+        print("=" * 30)
+        print(f"Games Played: {self.games_played}")
+        print(f"Games Won: {self.games_won}")
+        print(f"Win Rate: {win_rate:.1f}%")
+        print(f"Current Win Streak: {self.current_win_streak}")
+        print(f"Current Lose Streak: {self.current_lose_streak}")
+        print(f"Best Win Streak: {self.best_win_streak}")
+        print(f"Longest Lose Streak: {self.best_lose_streak}")
+        print("=" * 30)
 
     def check_guess(self, guess: str) -> str:
         """
@@ -160,10 +213,14 @@ class WordleGame:
             
             if result == 'G' * len(self.word_to_match):
                 print("Congratulations! You've guessed the word!")
+                self.update_streaks(True)
+                self.display_statistics()
                 return True  # Return True for win
         
         # If we reach here, all attempts were used without winning
         print(f"Sorry, you've used all attempts. The word was: {self.word_to_match}")
+        self.update_streaks(False)
+        self.display_statistics()
         return False  # Return False for loss
     
     def start_game_loop(self):
@@ -181,8 +238,15 @@ class WordleGame:
             
             if won:
                 print(f"🎉 You won in {self.current_guess_count} attempts!")
+                if self.current_win_streak > 1:
+                    print(f"� Win streak: {self.current_win_streak} games!")
             else:
-                print("💔 Better luck next time!")
+                print("�💔 Better luck next time!")
+                if self.current_lose_streak > 1:
+                    print(f"😅 Lose streak: {self.current_lose_streak} games...")
+            
+            # Display statistics
+            self.display_statistics()
             
             # Ask if player wants to play again
             while True:
