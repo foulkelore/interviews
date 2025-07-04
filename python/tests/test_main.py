@@ -49,3 +49,8 @@ def test_check_guess_part_fail_dup_letters_five(game_setup):
 def test_check_guess_pass(game_setup):
     result = game_setup.check_guess("build")
     assert result == "GGGGG"
+
+def test_generate_random_word(game_setup):
+    result = game_setup.generate_random_word()
+    assert len(result) == 5
+    assert result.isalpha()
