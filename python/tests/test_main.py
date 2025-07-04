@@ -58,3 +58,17 @@ def test_reset_game(game_setup):
     org_word = game_setup.get_word_to_match()
     game_setup.reset_game()
     assert game_setup.get_word_to_match() != org_word
+
+def test_update_streaks(game_setup):
+    game_setup.update_streaks(True)
+    assert game_setup.games_played == 1
+    assert game_setup.games_won == 1
+    assert game_setup.current_win_streak == 1
+    assert game_setup.best_win_streak == 1
+
+    game_setup.update_streaks(False)
+    assert game_setup.games_played == 2
+    assert game_setup.games_won == 1
+    assert game_setup.current_win_streak == 0
+    assert game_setup.current_lose_streak == 1
+    assert game_setup.best_lose_streak == 1
