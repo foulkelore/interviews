@@ -156,6 +156,6 @@ class WordleGame:
 
 
 if __name__ == "__main__":
-    self = WordleGame()
-    print(f"\n\nPlay Wordle - word to guess is {self.word_to_match}!\n\n")
-    self.play_game()
+    game = WordleGame()
+    print(f"\n\nPlay Wordle - word to guess is {game.word_to_match}!\n\n")
+    game.play_game()
