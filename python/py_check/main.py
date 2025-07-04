@@ -63,6 +63,13 @@ class WordleGame:
         "woman", "women", "world", "worry", "worse", "worst", "worth", "would", "write", "wrong",
         "wrote", "young", "youth"
     ]
+    
+    def __init__(self):
+        """
+        Initialize the WordleGame with a random target word and an empty guess list.
+        """
+        self.word_to_match = self.generate_random_word()
+        self.guess_list =[]
 
     def get_word_to_match(self) -> str:
         return self.word_to_match

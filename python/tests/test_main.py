@@ -4,9 +4,8 @@ from py_check.main import WordleGame
 @pytest.fixture
 def game_setup():
     # Reset the game state before each test
-    WordleGame.word_to_match = "build"
-    WordleGame.guess_list = []
     game = WordleGame()
+    game.word_to_match = "build"
     return game
 
 def test_get_word_to_match(game_setup):
