@@ -246,7 +246,7 @@ class WordleGame:
                     print(f"😅 Lose streak: {self.current_lose_streak} games...")
             
             # Display statistics
-            self.display_statistics()
+            #self.display_statistics()
             
             # Ask if player wants to play again
             while True:
