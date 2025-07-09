@@ -72,3 +72,26 @@ def test_update_streaks(game_setup):
     assert game_setup.current_win_streak == 0
     assert game_setup.current_lose_streak == 1
     assert game_setup.best_lose_streak == 1
+
+def test_play_game_once_through(game_setup):
+    # Simulate a full game: incorrect guesses, then a correct guess
+    guesses = ["start", "blank", "build"]  # 'build' is the answer
+    for guess in guesses:
+        result = game_setup.check_guess(guess)
+        game_setup.guess_list.append(guess)
+        game_setup.current_guess_count += 1
+        if result == "GGGGG":
+            game_setup.update_streaks(True)
+            break
+    else:
+        game_setup.update_streaks(False)
+
+    # After the game, check the state
+    assert game_setup.games_played == 1
+    assert game_setup.games_won == 1
+    assert game_setup.current_win_streak == 1
+    assert game_setup.best_win_streak == 1
+    assert game_setup.current_lose_streak == 0
+    assert game_setup.best_lose_streak == 0
+    assert game_setup.guess_list == guesses
+    assert game_setup.current_guess_count == len(guesses)
